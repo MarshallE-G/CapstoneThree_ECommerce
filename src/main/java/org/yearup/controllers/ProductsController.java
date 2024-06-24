@@ -25,7 +25,7 @@ public class ProductsController
     }
 
     @GetMapping("")
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("permitAll()") // Permits everyone to "get/search all products"
     public List<Product> search(@RequestParam(name="cat", required = false) Integer categoryId,
                                 @RequestParam(name="minPrice", required = false) BigDecimal minPrice,
                                 @RequestParam(name="maxPrice", required = false) BigDecimal maxPrice,
@@ -62,7 +62,7 @@ public class ProductsController
     }
 
     @PostMapping()
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')") // Permits ONLY an Admin to "add products"
     public Product addProduct(@RequestBody Product product)
     {
         try
