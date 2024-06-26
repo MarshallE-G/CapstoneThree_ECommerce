@@ -81,8 +81,9 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     }
     
     @Override
-    public void delete(int productId)
+    public void delete(ShoppingCart shoppingCart)
     {
     
     }
+    
 }
