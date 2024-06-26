@@ -22,43 +22,32 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
     public List<Product> search(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String color)
     {
         List<Product> products = new ArrayList<>();
-        String        sql;
         
-        if(categoryId == null)
-        {
-            sql = "SELECT * FROM products " +
-                    "WHERE price BETWEEN ? AND ? " +
-                    "   AND color LIKE ? ";
-        } else
-        {
-            sql = "SELECT * FROM products " +
-                    "WHERE category_id = ? " +
-                    "   AND price BETWEEN ? AND ? " +
-                    "   AND color LIKE ? ";
-        }
+        String sql = "SELECT * FROM products " +
+                "WHERE (category_id = ? OR ? = -1) " +
+                "   AND (price >= ? OR ? = -1) " +
+                "   AND (price <= ? OR ? = -1) " +
+                "   AND (color = ? OR ? = '') ";
         
-        BigDecimal minPriceToSearch = minPrice == null ? new BigDecimal("-1") : minPrice;
-        BigDecimal maxPriceToSearch = maxPrice == null ? getMaxPrice() : maxPrice;
-        String     colorToSearch    = color == null ? "%" : color;
+        categoryId = categoryId == null ? -1 : categoryId;
+        minPrice = minPrice == null ? new BigDecimal("-1") : minPrice;
+        maxPrice = maxPrice == null ? new BigDecimal("-1") : maxPrice;
+        color = color == null ? "" : color;
         
         try(
                 Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         )
         {
-            if(categoryId == null)
-            {
-                statement.setBigDecimal(1, minPriceToSearch);
-                statement.setBigDecimal(2, maxPriceToSearch);
-                statement.setString(3, "%" + colorToSearch + "%"); // might do contains ("%" + colorToSearch + "%")
-            } else
-            {
-                statement.setInt(1, categoryId);
-                statement.setBigDecimal(2, minPriceToSearch);
-                statement.setBigDecimal(3, maxPriceToSearch);
-                statement.setString(4, "%" + colorToSearch + "%"); // might do contains ("%" + colorToSearch + "%")
-            }
             
+            statement.setInt(1, categoryId);
+            statement.setInt(2, categoryId);
+            statement.setBigDecimal(3, minPrice);
+            statement.setBigDecimal(4, minPrice);
+            statement.setBigDecimal(5, maxPrice);
+            statement.setBigDecimal(6, maxPrice);
+            statement.setString(7, color);
+            statement.setString(8, color);
             
             try(ResultSet row = statement.executeQuery();)
             {
@@ -254,31 +243,5 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         String     imageUrl    = row.getString("image_url");
         
         return new Product(productId, name, price, categoryId, description, color, stock, isFeatured, imageUrl);
-    }
-    
-    public BigDecimal getMaxPrice()
-    {
-        BigDecimal maxPrice = new BigDecimal(0);
-        String     sql      = "SELECT MAX(price) FROM products";
-        
-        try(
-                Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql);
-        )
-        {
-            
-            try(ResultSet row = statement.executeQuery();)
-            {
-                if(row.next())
-                {
-                    maxPrice = row.getBigDecimal(1);
-                }
-            }
-        }
-        catch (SQLException e)
-        {
-            throw new RuntimeException(e);
-        }
-        return maxPrice;
     }
 }
