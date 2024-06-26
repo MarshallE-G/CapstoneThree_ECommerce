@@ -121,7 +121,7 @@ public class CategoriesController
             if(category == null)
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             
-            productDao.delete(id);
+            categoryDao.delete(id);
         }
         catch (Exception ex)
         {
