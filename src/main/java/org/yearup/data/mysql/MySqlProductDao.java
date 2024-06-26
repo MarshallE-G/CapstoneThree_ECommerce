@@ -27,36 +27,36 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         if(categoryId == null)
         {
             sql = "SELECT * FROM products " +
-                    "WHERE price BETWEEN ? AND ? OR ? = -1 " +
-                    "   AND (color = ? OR ? = '') ";
+                    "WHERE price BETWEEN ? AND ? " +
+                    "   AND color LIKE ? ";
         } else
         {
             sql = "SELECT * FROM products " +
                     "WHERE category_id = ? " +
-                    "   AND price BETWEEN ? AND ? OR ? = -1 " +
-                    "   AND (color = ? OR ? = '') ";
+                    "   AND price BETWEEN ? AND ? " +
+                    "   AND color LIKE ? ";
         }
         
         BigDecimal minPriceToSearch = minPrice == null ? new BigDecimal("-1") : minPrice;
-        BigDecimal maxPriceToSearch = maxPrice == null ? new BigDecimal("-1") : maxPrice;
-        String     colorToSearch    = color == null ? "" : color;
+        BigDecimal maxPriceToSearch = maxPrice == null ? getMaxPrice() : maxPrice;
+        String     colorToSearch    = color == null ? "%" : color;
         
         try(
                 Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         )
         {
-            if(categoryId != null)
+            if(categoryId == null)
             {
-                statement.setInt(1, categoryId);
-                statement.setBigDecimal(2, minPrice);
-                statement.setBigDecimal(3, minPrice);
-                statement.setString(4, color);
+                statement.setBigDecimal(1, minPriceToSearch);
+                statement.setBigDecimal(2, maxPriceToSearch);
+                statement.setString(3, "%" + colorToSearch + "%"); // might do contains ("%" + colorToSearch + "%")
             } else
             {
-                statement.setBigDecimal(1, minPrice);
-                statement.setBigDecimal(2, minPrice);
-                statement.setString(3, color);
+                statement.setInt(1, categoryId);
+                statement.setBigDecimal(2, minPriceToSearch);
+                statement.setBigDecimal(3, maxPriceToSearch);
+                statement.setString(4, "%" + colorToSearch + "%"); // might do contains ("%" + colorToSearch + "%")
             }
             
             
