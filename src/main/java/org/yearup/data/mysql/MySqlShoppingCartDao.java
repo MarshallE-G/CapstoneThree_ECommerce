@@ -27,7 +27,6 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         // Get shopping cart associated with a specific user (id)
             // display all the items in the shopping cart (list)
                 // display the quantity <---- getter
-                    // if m
                 // display the display percentage (%) <---- getter
                 // display the line total (item price * quantity) <---- helper method
         // display the total amount <---- helper method
@@ -64,16 +63,21 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         }
     }
     
+    // Only call this method when adding a NEW item to the cart.
     @Override
     public ShoppingCart add(ShoppingCartItem shoppingCartItem)
     {
         return null;
     }
     
+    // Call this method when adding MORE of the SAME item to a cart. (In order to update quantity)
     @Override
     public void update(int productId, ShoppingCart shoppingCart)
     {
-    
+        // How to increase quantity value (maybe):
+            // Have to Return Generated keys
+                // int itemQuantity = generatedKeys.getInt("quantity")
+                // .setQuantity(itemQuantity + 1)
     }
     
     @Override
