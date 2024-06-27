@@ -8,9 +8,9 @@ public interface ShoppingCartDao
 {
     ShoppingCart getByUserId(int userId);
     
-    ShoppingCart add(ShoppingCartItem shoppingCartItem);
+    ShoppingCartItem add(int userId, ShoppingCartItem shoppingCartItem);
     
-    void update(int productId, ShoppingCart shoppingCart);
+    void update(int userId, ShoppingCartItem shoppingCartItem);
     
     void delete(ShoppingCart shoppingCart);
 }
