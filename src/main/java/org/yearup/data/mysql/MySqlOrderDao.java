@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class MySqlOrderDao extends MySqlDaoBase implements OrderDao
@@ -55,7 +56,9 @@ public class MySqlOrderDao extends MySqlDaoBase implements OrderDao
         String sql = "INSERT INTO orders(user_id, date, address, city, state, zip) " +
                 " VALUES (?, ?, ?, ?, ?, ?);";
         
-        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime     dateTime          = LocalDateTime.now();
+        DateTimeFormatter formatter         = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String            formattedDateTime = dateTime.format(formatter);
         
         try(
                 Connection connection = getConnection();
@@ -63,7 +66,7 @@ public class MySqlOrderDao extends MySqlDaoBase implements OrderDao
         )
         {
             statement.setInt(1, profile.getUserId());
-            statement.setTimestamp(2, java.sql.Timestamp.valueOf(dateTime)); // A TimeStamp is like... "DateTime"
+            statement.setTimestamp(2, java.sql.Timestamp.valueOf(formattedDateTime)); // A TimeStamp is like... "DateTime"
             statement.setString(3, profile.getAddress());
             statement.setString(4, profile.getCity());
             statement.setString(5, profile.getState());
@@ -78,7 +81,7 @@ public class MySqlOrderDao extends MySqlDaoBase implements OrderDao
                     if(generatedKeys.next())
                     {
                         int orderId = generatedKeys.getInt(1);
-
+                        
                         return getById(orderId);
                     }
                 }

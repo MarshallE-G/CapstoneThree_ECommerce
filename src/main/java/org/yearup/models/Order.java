@@ -5,20 +5,20 @@ import java.time.LocalDateTime;
 
 public class Order
 {
-    private int           orderId; // auto-increments
-    private int           userId; // User (must use Principal object)
-    private LocalDateTime date;
-    private String        address; // Profile
-    private String        city; // Profile
-    private String        state; // Profile
-    private String        zip; // Profile
-    private BigDecimal    shippingAmount = BigDecimal.ZERO; // default = 0
+    private int        orderId; // auto-increments
+    private int        userId; // User (must use Principal object)
+    private String     date;
+    private String     address; // Profile
+    private String     city; // Profile
+    private String     state; // Profile
+    private String     zip; // Profile
+    private BigDecimal shippingAmount = BigDecimal.ZERO; // default = 0
     
     public Order()
     {
     }
     
-    public Order(int orderId, int userId, LocalDateTime date, String address, String city, String state, String zip)
+    public Order(int orderId, int userId, String date, String address, String city, String state, String zip)
     {
         this.orderId = orderId;
         this.userId = userId;
@@ -29,7 +29,7 @@ public class Order
         this.zip = zip;
     }
     
-    public Order(int orderId, int userId, LocalDateTime date, String address, String city, String state, String zip, BigDecimal shippingAmount)
+    public Order(int orderId, int userId, String date, String address, String city, String state, String zip, BigDecimal shippingAmount)
     {
         this.orderId = orderId;
         this.userId = userId;
@@ -61,12 +61,12 @@ public class Order
         this.userId = userId;
     }
     
-    public LocalDateTime getDate()
+    public String getDate()
     {
         return date;
     }
     
-    public void setDate(LocalDateTime date)
+    public void setDate(String date)
     {
         this.date = date;
     }
