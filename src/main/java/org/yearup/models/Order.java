@@ -1,23 +1,35 @@
 package org.yearup.models;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class Order
 {
-    private int        orderId;
-    private int        userId;
-    private String     date;
-    private String     address;
-    private String     city;
-    private String     state;
-    private String     zip;
-    private BigDecimal shippingAmount;
+    private int           orderId; // auto-increments
+    private int           userId; // User (must use Principal object)
+    private LocalDateTime date;
+    private String        address; // Profile
+    private String        city; // Profile
+    private String        state; // Profile
+    private String        zip; // Profile
+    private BigDecimal    shippingAmount = BigDecimal.ZERO; // default = 0
     
     public Order()
     {
     }
     
-    public Order(int orderId, int userId, String date, String address, String city, String state, String zip, BigDecimal shippingAmount)
+    public Order(int orderId, int userId, LocalDateTime date, String address, String city, String state, String zip)
+    {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.date = date;
+        this.address = address;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+    }
+    
+    public Order(int orderId, int userId, LocalDateTime date, String address, String city, String state, String zip, BigDecimal shippingAmount)
     {
         this.orderId = orderId;
         this.userId = userId;
@@ -49,12 +61,12 @@ public class Order
         this.userId = userId;
     }
     
-    public String getDate()
+    public LocalDateTime getDate()
     {
         return date;
     }
     
-    public void setDate(String date)
+    public void setDate(LocalDateTime date)
     {
         this.date = date;
     }
