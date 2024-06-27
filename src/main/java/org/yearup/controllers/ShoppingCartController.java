@@ -18,11 +18,9 @@ import java.security.Principal;
 @RestController
 @RequestMapping("cart")
 @CrossOrigin
-// only logged in users should have access to these actions
 @PreAuthorize("hasRole('ROLE_USER')")
 public class ShoppingCartController
 {
-    // a shopping cart requires
     private ShoppingCartDao shoppingCartDao;
     private UserDao         userDao;
     private ProductDao      productDao;
@@ -35,7 +33,6 @@ public class ShoppingCartController
         this.productDao = productDao;
     }
     
-    // each method in this controller requires a Principal object as a parameter
     @GetMapping("")
     public ShoppingCart getCart(Principal principal)
     {
@@ -47,7 +44,7 @@ public class ShoppingCartController
             User user   = userDao.getByUserName(userName);
             int  userId = user.getId();
             
-            // use the shoppingcartDao to get all items in the cart and return the cart
+            // use the shoppingCartDao to get all items in the cart and return the cart
             var shoppingCart = shoppingCartDao.getByUserId(userId);
             
             if(shoppingCart == null)
@@ -61,18 +58,14 @@ public class ShoppingCartController
         }
     }
     
-    // add a POST method to add a product to the cart - the url should be
     @PostMapping("/products/{productId}")
-    // https://localhost:8080/cart/products/15 (15 is the productId to be added
     public ShoppingCartItem addItem(@PathVariable int productId, Principal principal)
     {
         try
         {
-            // get the currently logged-in username
             String userName = principal.getName();
-            // find database user by userId
-            User user   = userDao.getByUserName(userName);
-            int  userId = user.getId();
+            User   user     = userDao.getByUserName(userName);
+            int    userId   = user.getId();
             
             var shoppingCart = shoppingCartDao.getByUserId(userId);
             
@@ -98,24 +91,23 @@ public class ShoppingCartController
         }
     }
     
-    
-    // add a PUT method to update an existing product in the cart - the url should be
     @PutMapping("/products/{productId}")
-    // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
-    // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
     public void updateShoppingCartItem(@PathVariable int productId,
                                        @RequestBody ShoppingCartItem shoppingCartItem,
                                        Principal principal)
     {
         try
         {
-            // get the currently logged-in username
             String userName = principal.getName();
-            // find database user by userId
-            User user   = userDao.getByUserName(userName);
-            int  userId = user.getId();
+            User   user     = userDao.getByUserName(userName);
+            int    userId   = user.getId();
             
-            shoppingCartDao.update(userId, shoppingCartItem);
+            var shoppingCart = shoppingCartDao.getByUserId(userId);
+            
+            if(shoppingCart.contains(productId))
+            {
+                shoppingCartDao.update(userId, shoppingCartItem);
+            }
         }
         catch (Exception ex)
         {
@@ -123,8 +115,25 @@ public class ShoppingCartController
         }
     }
     
-    
-    // add a DELETE method to clear all products from the current users cart
-    // https://localhost:8080/cart
-    
+    @DeleteMapping()
+    public void deleteShoppingCart(Principal principal)
+    {
+        try
+        {
+            String userName = principal.getName();
+            User   user     = userDao.getByUserName(userName);
+            int    userId   = user.getId();
+            
+            var shoppingCart = shoppingCartDao.getByUserId(userId);
+            
+            if(shoppingCart == null)
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            
+            shoppingCartDao.delete(userId);
+        }
+        catch (Exception ex)
+        {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
+    }
 }

@@ -2,7 +2,6 @@ package org.yearup.data.mysql;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.yearup.data.ProductDao;
 import org.yearup.data.ShoppingCartDao;
 import org.yearup.models.Product;
 import org.yearup.models.ShoppingCart;
@@ -17,8 +16,6 @@ import java.sql.SQLException;
 @Component
 public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDao
 {
-    private ShoppingCart shoppingCart = new ShoppingCart();
-    
     @Autowired
     public MySqlShoppingCartDao(DataSource dataSource)
     {
@@ -28,12 +25,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     @Override
     public ShoppingCart getByUserId(int userId)
     {
-        // Get shopping cart associated with a specific user (id)
-        // display all the items in the shopping cart (list)
-        // display the quantity <---- getter
-        // display the display percentage (%) <---- getter
-        // display the line total (item price * quantity) <---- helper method
-        // display the total amount <---- helper method
+        ShoppingCart shoppingCart = new ShoppingCart();
         
         String sql = "SELECT p.*, quantity " +
                 " FROM products AS p " +
@@ -117,7 +109,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
             shoppingCartItem.setQuantity(shoppingCartItem.getQuantity() + 1);
             
             int newQuantity = shoppingCartItem.getQuantity();
-            int productId = shoppingCartItem.getProductId();
+            int productId   = shoppingCartItem.getProductId();
             
             statement.setInt(1, newQuantity);
             statement.setInt(2, userId);
@@ -132,9 +124,24 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     }
     
     @Override
-    public void delete(ShoppingCart shoppingCart)
+    public void delete(int userId)
     {
-    
+        String sql = "DELETE FROM shopping_cart" +
+                " WHERE user_id = ?;";
+        
+        try(
+                Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql);
+        )
+        {
+            statement.setInt(1, userId);
+            
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
     
 }
