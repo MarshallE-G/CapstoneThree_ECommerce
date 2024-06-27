@@ -86,8 +86,12 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
                 PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
         )
         {
+            int productId = shoppingCartItem.getProduct().getProductId();
+            
             statement.setInt(1, userId);
-            statement.setInt(2, shoppingCartItem.getProduct().getProductId());
+            statement.setInt(2, productId);
+            
+            statement.executeUpdate();
         }
         catch (SQLException e)
         {
@@ -100,21 +104,26 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
     @Override
     public void update(int userId, ShoppingCartItem shoppingCartItem)
     {
-        // How to increase quantity value (maybe):
-            // Have to Return Generated keys
-            // int itemQuantity = generatedKeys.getInt("quantity")
-            // .setQuantity(itemQuantity + 1)
         String sql = "UPDATE shopping_cart" +
                 " SET quantity = ? " +
                 " WHERE user_id = ? " +
-                "   AND product_id = ?";
+                "   AND product_id = ?;";
         
         try(
                 Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
         )
         {
-            statement.setInt(1, shoppingCartItem.getQuantity() + 1);
+            shoppingCartItem.setQuantity(shoppingCartItem.getQuantity() + 1);
+            
+            int newQuantity = shoppingCartItem.getQuantity();
+            int productId = shoppingCartItem.getProductId();
+            
+            statement.setInt(1, newQuantity);
+            statement.setInt(2, userId);
+            statement.setInt(3, productId);
+            
+            statement.executeUpdate();
         }
         catch (SQLException e)
         {

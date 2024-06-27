@@ -85,7 +85,11 @@ public class ShoppingCartController
                 return shoppingCartDao.add(userId, shoppingCartItem);
             } else
             {
-            
+                ShoppingCartItem shoppingCartItem = shoppingCart.get(productId);
+                
+                shoppingCartDao.update(userId, shoppingCartItem);
+                
+                return shoppingCartItem;
             }
         }
         catch (Exception ex)
@@ -105,7 +109,13 @@ public class ShoppingCartController
     {
         try
         {
-        
+            // get the currently logged-in username
+            String userName = principal.getName();
+            // find database user by userId
+            User user   = userDao.getByUserName(userName);
+            int  userId = user.getId();
+            
+            shoppingCartDao.update(userId, shoppingCartItem);
         }
         catch (Exception ex)
         {
