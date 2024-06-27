@@ -14,7 +14,13 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
     {
         super(dataSource);
     }
-
+    
+    @Override
+    public Profile getByUserId(int userId)
+    {
+        return null;
+    }
+    
     @Override
     public Profile create(Profile profile)
     {
@@ -45,5 +51,11 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
             throw new RuntimeException(e);
         }
     }
-
+    
+    @Override
+    public void update(int userId, Profile profile)
+    {
+    
+    }
+    
 }
