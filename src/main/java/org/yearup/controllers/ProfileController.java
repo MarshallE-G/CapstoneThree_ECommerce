@@ -50,24 +50,6 @@ public class ProfileController
         }
     }
     
-    @PostMapping("")
-    public Profile createProfile(@RequestBody Profile profile, Principal principal)
-    {
-        try {
-            String userName = principal.getName();
-            User   user     = userDao.getByUserName(userName);
-            int    userId   = user.getId();
-            
-            if (profileDao.getByUserId(userId) == null)
-                return profileDao.create(profile);
-            
-            return profile;
-        }
-        catch (Exception ex) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
-        }
-    }
-    
     @PutMapping("")
     public void updateProfile(@RequestBody Profile profile, Principal principal) {
         try
