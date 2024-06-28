@@ -27,7 +27,7 @@ public class MySqlOrderLineItemDao extends MySqlDaoBase implements OrderLineItem
         
         try(
                 Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)
+                PreparedStatement statement = connection.prepareStatement(sql);
         )
         {
             statement.setInt(1, orderLineItemId);
