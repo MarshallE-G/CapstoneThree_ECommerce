@@ -37,7 +37,7 @@ public class ProfileController
             User   user     = userDao.getByUserName(userName);
             int    userId   = user.getId();
             
-            var profile = profileDao.getByUserId(userId);
+            Profile profile = profileDao.getByUserId(userId);
             
             if(profile == null)
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -58,7 +58,8 @@ public class ProfileController
             User   user     = userDao.getByUserName(userName);
             int    userId   = user.getId();
             
-            profileDao.update(userId, profile);
+            profile.setUserId(userId);
+            profileDao.update(profile);
         }
         catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
