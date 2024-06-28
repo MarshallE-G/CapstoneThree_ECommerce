@@ -92,7 +92,7 @@ public class ShoppingCartController
     }
     
     @PutMapping("/products/{productId}")
-    public void updateShoppingCartItem(@PathVariable int productId,
+    public void updateCartItem(@PathVariable int productId,
                                        @RequestBody ShoppingCartItem shoppingCartItem,
                                        Principal principal)
     {
@@ -116,7 +116,7 @@ public class ShoppingCartController
     }
     
     @DeleteMapping()
-    public void deleteShoppingCart(Principal principal)
+    public void deleteCart(Principal principal)
     {
         try
         {
