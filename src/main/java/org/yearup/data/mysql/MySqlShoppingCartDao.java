@@ -78,7 +78,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
                 PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
         )
         {
-            int productId = shoppingCartItem.getProduct().getProductId();
+            int productId = shoppingCartItem.getProductId();
             
             statement.setInt(1, userId);
             statement.setInt(2, productId);
