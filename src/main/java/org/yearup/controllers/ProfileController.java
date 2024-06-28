@@ -13,7 +13,7 @@ import org.yearup.models.User;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("profiles")
+@RequestMapping("profile")
 @CrossOrigin
 @PreAuthorize("hasRole('ROLE_USER')")
 public class ProfileController
