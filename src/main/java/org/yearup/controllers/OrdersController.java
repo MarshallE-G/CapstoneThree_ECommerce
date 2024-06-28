@@ -2,6 +2,7 @@ package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.yearup.data.*;
@@ -13,6 +14,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("orders")
 @CrossOrigin
+@PreAuthorize("hasRole('ROLE_USER')")
 public class OrdersController
 {
     private OrderDao         orderDao;
@@ -54,6 +56,8 @@ public class OrdersController
                 
                 orderLineItemDao.create(orderId, shoppingCartItem);
             }
+            
+            shoppingCartDao.delete(userId);
             
             return order;
         }
