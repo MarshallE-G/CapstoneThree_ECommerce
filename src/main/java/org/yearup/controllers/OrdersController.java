@@ -2,17 +2,13 @@ package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.yearup.data.*;
-import org.yearup.models.Order;
-import org.yearup.models.Profile;
-import org.yearup.models.User;
+import org.yearup.models.*;
 
 import java.security.Principal;
+import java.util.Map;
 
 @RestController
 @RequestMapping("orders")
@@ -23,7 +19,7 @@ public class OrdersController
     private OrderLineItemDao orderLineItemDao;
     private UserDao          userDao;
     private ProfileDao       profileDao;
-    private ShoppingCartDao shoppingCartDao;
+    private ShoppingCartDao  shoppingCartDao;
     
     @Autowired
     public OrdersController(OrderDao orderDao, OrderLineItemDao orderLineItemDao, UserDao userDao, ProfileDao profileDao, ShoppingCartDao shoppingCartDao)
@@ -35,7 +31,7 @@ public class OrdersController
         this.shoppingCartDao = shoppingCartDao;
     }
     
-    @GetMapping("")
+    @PostMapping
     public Order createOrder(Principal principal)
     {
         try
@@ -43,14 +39,23 @@ public class OrdersController
             String userName = principal.getName();
             User   user     = userDao.getByUserName(userName);
             int    userId   = user.getId();
-    
-            var profile = profileDao.getByUserId(userId);
             
-            var shoppingCart = shoppingCartDao.getByUserId(userId);
+            Profile profile = profileDao.getByUserId(userId);
             
+            ShoppingCart shoppingCart = shoppingCartDao.getByUserId(userId);
             
+            Order order = orderDao.create(profile, shoppingCart);
+            int orderId = order.getOrderId();
             
-            return orderDao.create(profile, shoppingCart);
+            for(Map.Entry<Integer, ShoppingCartItem> set :
+                    shoppingCart.getItems().entrySet())
+            {
+                ShoppingCartItem shoppingCartItem = set.getValue();
+                
+                orderLineItemDao.create(orderId, shoppingCartItem);
+            }
+            
+            return order;
         }
         catch (Exception ex)
         {
