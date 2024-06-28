@@ -1,8 +1,11 @@
 package org.yearup.data;
 
 import org.yearup.models.OrderLineItem;
+import org.yearup.models.ShoppingCartItem;
 
 public interface OrderLineItemDao
 {
-    OrderLineItem create(int orderId, OrderLineItem lineItem);
+    OrderLineItem getById(int orderLineItemId);
+    
+    OrderLineItem create(int orderId, ShoppingCartItem shoppingCartItem);
 }
