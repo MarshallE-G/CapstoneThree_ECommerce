@@ -92,7 +92,7 @@ public class ShoppingCartController
     }
     
     @PutMapping("/products/{productId}")
-    public void updateCartItem(@PathVariable int productId,
+    public ShoppingCart updateCartItem(@PathVariable int productId,
                                        @RequestBody ShoppingCartItem shoppingCartItem,
                                        Principal principal)
     {
@@ -107,7 +107,10 @@ public class ShoppingCartController
             if(shoppingCart.contains(productId))
             {
                 shoppingCartDao.update(userId, shoppingCartItem);
+                return shoppingCart;
             }
+            
+            return shoppingCart;
         }
         catch (Exception ex)
         {
